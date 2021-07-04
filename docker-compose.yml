@@ -1,0 +1,13 @@
+version: '2.1'
+services:
+  urbackup-exporter:
+    image: urbackup-exporter
+    container_name: urbackup-exporter
+    environment:
+      - URBACKUP_SERVER_URL=http://<server_host>:55414/x
+      - URBACKUP_SERVER_USERNAME=admin
+      - URBACKUP_SERVER_PASSWORD=1234
+      - EXPORT_CLIENT_BACKUPS=true
+    ports:
+      - 9554:9554
+    restart: unless-stopped

@@ -69,7 +69,7 @@ Here are some example snippets to help you get started creating a container.
 
 ### docker-compose
 
-Compatible with docker-compose v2 schemas.
+Compatible with docker-compose v2 schemas:
 
 ```yaml
 ---
@@ -117,4 +117,31 @@ docker run -d \
 
 ## Grafana dashboard
 
-TODO
+There is a reference Grafana dashboard in [grafana/grafana_dashboard.json](./grafana/grafana_dashboard.json).
+
+![](./grafana/grafana_dashboard.png)
+
+## Prometheus / Alertmanager rules
+
+Example Prometheus rules for alerting:
+
+```yaml
+  - alert: UrBackupOutdated
+    # 1209600 = 15 days
+    expr: time() - urbackup_backup_lasttime{backup_type="file"} > 1209600
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: UrBackup {{ $labels.client_name }} backup is outdated
+      description: UrBackup backup is outdated\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}
+
+  - alert: UrBackupFailure
+    expr: urbackup_backup_ok{backup_type="file"} == 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: UrBackup {{ $labels.client_name }} backup failed
+      description: UrBackup backup failed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}
+```

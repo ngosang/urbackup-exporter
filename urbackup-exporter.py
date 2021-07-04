@@ -9,11 +9,11 @@ import urbackup_api
 
 
 class UrbackupCollector(object):
-    def __init__(self, server, username, password, export_backups):
+    def __init__(self, server, username, password, export_client_backups):
         self.server = server
         self.username = username
         self.password = password
-        self.export_backups = export_backups
+        self.export_client_backups = export_client_backups
         # test connection
         urbackup_api.urbackup_server(self.server, self.username, self.password)
 
@@ -89,7 +89,7 @@ class UrbackupCollector(object):
             backup_lasttime.add_metric(common_label_values + ["image"],
                                        self.float_or_default(client["lastbackup_image"], 0.0))
 
-            if self.export_backups:
+            if self.export_client_backups:
                 count_archived, count_no_archived, size_archived, size_no_archived = self.calc_client_backups(
                     api.get_clientbackups(client["id"]))
                 backup_number_total.add_metric(common_label_values + ["file", "yes"], count_archived)
@@ -110,7 +110,7 @@ class UrbackupCollector(object):
         yield backup_issues
         yield backup_lasttime
 
-        if self.export_backups:
+        if self.export_client_backups:
             yield backup_number_total
             yield backup_size_total
 

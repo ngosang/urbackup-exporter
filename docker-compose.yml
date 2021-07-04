@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   urbackup-exporter:
-    image: urbackup-exporter
+    image: ghcr.io/ngosang/urbackup-exporter
     container_name: urbackup-exporter
     environment:
       - URBACKUP_SERVER_URL=http://<server_host>:55414/x

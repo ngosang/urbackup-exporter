@@ -1,6 +1,12 @@
 # UrBackup Exporter
 
-Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system.
+[![Latest release](https://img.shields.io/github/v/release/ngosang/urbackup-exporter)](https://github.com/ngosang/urbackup-exporter/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ngosang/urbackup-exporter)](https://hub.docker.com/r/ngosang/urbackup-exporter/)
+[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X5NJLLX5GLTV6&source=url)
+[![Donate Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-yellow.svg)](https://www.buymeacoffee.com/ngosang)
+[![Donate Bitcoin](https://img.shields.io/badge/Donate-Bitcoin-orange.svg)](https://en.cryptobadges.io/donate/13Hcv77AdnFWEUZ9qUpoPBttQsUT7q9TTh)
+
+Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system. Tested with UrBackup server 2.4.13.
 
 Inspired by [h3po work](https://gist.github.com/h3po/36cab38d2b443c0523c4c9e83203f382).
 
@@ -9,8 +15,6 @@ Inspired by [h3po work](https://gist.github.com/h3po/36cab38d2b443c0523c4c9e8320
  * Python 3
  * [prometheus-client](https://github.com/prometheus/client_python)
  * [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)
-
-Tested with UrBackup server 2.4.13.
 
 ## Configuration
 
@@ -35,7 +39,68 @@ python urbackup-exporter.py
 
 ## Docker
 
-TODO
+Docker images are available in [GHCR](https://github.com/ngosang/urbackup-exporter/pkgs/container/urbackup-exporter) and [DockerHub](https://hub.docker.com/r/ngosang/urbackup-exporter).
+
+```bash
+docker pull ghcr.io/ngosang/urbackup-exporter
+or
+docker pull ngosang/urbackup-exporter
+```
+
+## Supported Architectures
+
+The architectures supported by this image are:
+
+| Architecture     | Default tag (Debian) | Alpine tag |
+| ---------------- | -------------------- | ---------- |
+| linux/386        | Yes                  | Yes        |
+| linux/amd64      | Yes                  | Yes        |
+| linux/arm/v6     | No                   | Yes        |
+| linux/arm/v7     | Yes                  | Yes        |
+| linux/arm64/v8   | Yes                  | Yes        |
+| linux/mips64le   | Yes                  | No         |
+| linux/ppc64le    | Yes                  | No         |
+| linux/s390x      | Yes                  | No         |
+
+
+## Usage
+
+Here are some example snippets to help you get started creating a container.
+
+### docker-compose
+
+Compatible with docker-compose v2 schemas.
+
+```yaml
+---
+version: '2.1'
+services:
+  urbackup-exporter:
+    image: ghcr.io/ngosang/urbackup-exporter
+    container_name: urbackup-exporter
+    environment:
+      - URBACKUP_SERVER_URL=http://<server_host>:55414/x
+      - URBACKUP_SERVER_USERNAME=admin
+      - URBACKUP_SERVER_PASSWORD=1234
+      - EXPORT_CLIENT_BACKUPS=true
+    ports:
+      - 9554:9554
+    restart: unless-stopped
+```
+
+### docker cli
+
+```bash
+docker run -d \
+  --name=urbackup-exporter \
+  -e URBACKUP_SERVER_URL=http://<server_host>:55414/x \
+  -e URBACKUP_SERVER_USERNAME=admin \
+  -e URBACKUP_SERVER_PASSWORD=1234 \
+  -e EXPORT_CLIENT_BACKUPS=true \
+  -p 9554:9554 \
+  --restart unless-stopped \
+  ghcr.io/ngosang/urbackup-exporter
+```
 
 ## Exported metrics
 

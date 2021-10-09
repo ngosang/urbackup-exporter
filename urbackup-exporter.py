@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 
+import logging
 import os
 import time
+import sys
 
 import prometheus_client
 import prometheus_client.core
 import urbackup_api
 
 
-class UrbackupCollector(object):
+class UrBackupCollector(object):
     def __init__(self, server, username, password, export_client_backups):
         self.server = server
         self.username = username
         self.password = password
         self.export_client_backups = export_client_backups
-        # test connection
-        urbackup_api.urbackup_server(self.server, self.username, self.password)
 
     def collect(self):
+        logging.debug("Incoming request")
 
         common_label_names = [
             "client_name",
@@ -68,7 +69,13 @@ class UrbackupCollector(object):
             labels=common_label_names + ["backup_type", "archived"])
 
         api = urbackup_api.urbackup_server(self.server, self.username, self.password)
-        for client in api.get_status():
+        try:
+            api_status = api.get_status()
+        except Exception as e:
+            logging.error("Unable to connect to UrBackup Server. Error: %s", str(e))
+            return
+
+        for client in api_status:
             common_label_values = [
                 client["name"],
                 client.get("groupname", "N/A"),
@@ -138,19 +145,32 @@ class UrbackupCollector(object):
 
 
 if __name__ == "__main__":
-    print("Starting UrBackup Prometheus Exporter ...")
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        level=logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO")),
+        datefmt='%Y-%m-%d %H:%M:%S',
+        handlers=[
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    logging.info("Starting UrBackup Prometheus Exporter ...")
 
-    urbackup_server_url = os.environ["URBACKUP_SERVER_URL"]
+    try:
+        urbackup_server_url = os.environ["URBACKUP_SERVER_URL"]
+    except Exception:
+        logging.error("Configuration error. The environment variable URBACKUP_SERVER_URL is mandatory")
+        sys.exit(1)
+
     urbackup_server_username = os.environ.get("URBACKUP_SERVER_USERNAME", "admin")
     urbackup_server_password = os.environ.get("URBACKUP_SERVER_PASSWORD", "1234")
-    export_client_backups = os.environ.get("EXPORT_CLIENT_BACKUPS", "true").lower() == "true"
+    urbackup_export_client_backups = os.environ.get("EXPORT_CLIENT_BACKUPS", "true").lower() == "true"
+    exporter_address = os.environ.get("LISTEN_ADDRESS", "0.0.0.0")
     exporter_port = int(os.environ.get("LISTEN_PORT", 9554))
-    exporter_address = os.environ.get("LISTEN_ADDRESS", "")
 
-    prometheus_client.core.REGISTRY.register(UrbackupCollector(
-        urbackup_server_url, urbackup_server_username, urbackup_server_password, export_client_backups))
+    prometheus_client.core.REGISTRY.register(UrBackupCollector(
+        urbackup_server_url, urbackup_server_username, urbackup_server_password, urbackup_export_client_backups))
     prometheus_client.start_http_server(exporter_port, exporter_address)
-    print("Ready!")
 
+    logging.info("Server listening in http://%s:%d/metrics", exporter_address, exporter_port)
     while True:
         time.sleep(60)

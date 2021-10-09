@@ -4,6 +4,7 @@ services:
     image: ghcr.io/ngosang/urbackup-exporter
     container_name: urbackup-exporter
     environment:
+      - TZ=Europe/Madrid
       - URBACKUP_SERVER_URL=http://<server_host>:55414/x
       - URBACKUP_SERVER_USERNAME=admin
       - URBACKUP_SERVER_PASSWORD=1234

@@ -10,25 +10,14 @@ Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system.
 
 Inspired by [h3po work](https://gist.github.com/h3po/36cab38d2b443c0523c4c9e83203f382).
 
-## Requirements
+## Install
 
+### Form source code
+
+Requirements:
  * Python 3
  * [prometheus-client](https://github.com/prometheus/client_python)
  * [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)
-
-## Configuration
-
-All configuration is done with environment variables.
-
-- `URBACKUP_SERVER_URL`: UrBackup server URL including host, port and API endpoint. Example: `http://192.168.1.100:55414/x`
-- `URBACKUP_SERVER_USERNAME`: (Optional) Username to login in the server. Only required if authorization is enabled. The default is `admin`.
-- `URBACKUP_SERVER_PASSWORD`: (Optional) Password to login in the server. Only required if authorization is enabled. The default is `1234`.
-- `EXPORT_CLIENT_BACKUPS`: (Optional) Export detailed metrics for each client. This option can generate a lot of metrics if there many configured clients. The default is `true`.
-- `LISTEN_PORT`: (Optional) The address the exporter should listen on. The default is `9554`.
-- `LISTEN_ADDRESS`: (Optional) The address the exporter should listen on. The default is
-   to listen on all addresses.
-
-## Install
 
 ```bash
 pip install -r /requirements.txt
@@ -37,7 +26,7 @@ export URBACKUP_SERVER_URL=http://192.168.1.100:55414/x
 python urbackup-exporter.py
 ```
 
-## Docker
+### Docker
 
 Docker images are available in [GHCR](https://github.com/ngosang/urbackup-exporter/pkgs/container/urbackup-exporter) and [DockerHub](https://hub.docker.com/r/ngosang/urbackup-exporter).
 
@@ -47,7 +36,7 @@ or
 docker pull ngosang/urbackup-exporter
 ```
 
-## Supported Architectures
+#### Supported Architectures
 
 The architectures supported by this image are:
 
@@ -62,12 +51,7 @@ The architectures supported by this image are:
 | linux/ppc64le    | Yes                  | No         |
 | linux/s390x      | Yes                  | No         |
 
-
-## Usage
-
-Here are some example snippets to help you get started creating a container.
-
-### docker-compose
+#### docker-compose
 
 Compatible with docker-compose v2 schemas:
 
@@ -79,6 +63,7 @@ services:
     image: ghcr.io/ngosang/urbackup-exporter
     container_name: urbackup-exporter
     environment:
+      - TZ=Europe/Madrid
       - URBACKUP_SERVER_URL=http://<server_host>:55414/x
       - URBACKUP_SERVER_USERNAME=admin
       - URBACKUP_SERVER_PASSWORD=1234
@@ -88,11 +73,12 @@ services:
     restart: unless-stopped
 ```
 
-### docker cli
+#### docker cli
 
 ```bash
 docker run -d \
   --name=urbackup-exporter \
+  -e TZ=Europe/Madrid \
   -e URBACKUP_SERVER_URL=http://<server_host>:55414/x \
   -e URBACKUP_SERVER_USERNAME=admin \
   -e URBACKUP_SERVER_PASSWORD=1234 \
@@ -101,6 +87,19 @@ docker run -d \
   --restart unless-stopped \
   ghcr.io/ngosang/urbackup-exporter
 ```
+
+## Configuration
+
+All configuration is done with environment variables.
+
+- `URBACKUP_SERVER_URL`: UrBackup server URL including host, port and API endpoint. Example: `http://192.168.1.100:55414/x`
+- `URBACKUP_SERVER_USERNAME`: (Optional) Username to login in the server. Only required if authorization is enabled. The default is `admin`.
+- `URBACKUP_SERVER_PASSWORD`: (Optional) Password to login in the server. Only required if authorization is enabled. The default is `1234`.
+- `EXPORT_CLIENT_BACKUPS`: (Optional) Export detailed metrics for each client. This option can generate a lot of metrics if there many configured clients. The default is `true`.
+- `LISTEN_PORT`: (Optional) The address the exporter should listen on. The default is `9554`.
+- `LISTEN_ADDRESS`: (Optional) The address the exporter should listen on. The default is
+   to listen on all addresses.
+- `LOG_LEVEL`: (Optional) Log level of the traces. The default is `INFO`.
 
 ## Exported metrics
 
@@ -115,11 +114,16 @@ docker run -d \
 | urbackup_backup_number_total  | counter | Number of backups |
 | urbackup_backup_size_total    | counter | Total size of backups in bytes |
 
-## Grafana dashboard
+## Prometheus config
 
-There is a reference Grafana dashboard in [grafana/grafana_dashboard.json](./grafana/grafana_dashboard.json).
+Example Prometheus configuration:
 
-![](./grafana/grafana_dashboard.png)
+```yaml
+scrape_configs:
+  - job_name: 'urbackup-exporter'
+    static_configs:
+      - targets: ['192.168.1.100:9554']
+```
 
 ## Prometheus / Alertmanager rules
 
@@ -145,3 +149,9 @@ Example Prometheus rules for alerting:
       summary: UrBackup {{ $labels.client_name }} backup failed
       description: UrBackup backup failed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}
 ```
+
+## Grafana dashboard
+
+There is a reference Grafana dashboard in [grafana/grafana_dashboard.json](./grafana/grafana_dashboard.json).
+
+![](./grafana/grafana_dashboard.png)

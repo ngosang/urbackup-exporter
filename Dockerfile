@@ -1,4 +1,4 @@
-FROM python:3.9.6-slim
+FROM python:3.10.1-slim
 
 COPY ./requirements.txt /requirements.txt
 COPY ./urbackup-exporter.py /urbackup-exporter.py

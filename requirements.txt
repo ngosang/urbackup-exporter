@@ -1,2 +1,2 @@
 urbackup-server-web-api-wrapper==0.11
-prometheus-client==0.10.1
+prometheus-client==0.12.0

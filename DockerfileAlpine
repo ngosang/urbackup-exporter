@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine3.14
+FROM python:3.10.1-alpine3.15
 
 COPY ./requirements.txt /requirements.txt
 COPY ./urbackup-exporter.py /urbackup-exporter.py
@@ -9,4 +9,4 @@ EXPOSE 9554
 ENTRYPOINT ["/usr/local/bin/python", "/urbackup-exporter.py"]
 
 # HELP
-# docker build -t ngosang/urbackup-exporter --platform linux/amd64 .
+# docker build -t ngosang/urbackup-exporter --platform linux/amd64 -f DockerfileAlpine .

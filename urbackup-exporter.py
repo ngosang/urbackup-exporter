@@ -12,10 +12,14 @@ import urbackup_api
 
 class UrBackupCollector(object):
     def __init__(self, server, username, password, export_client_backups):
+        self.api = None
         self.server = server
         self.username = username
         self.password = password
         self.export_client_backups = export_client_backups
+
+        # connect or fail
+        self.get_status_autologin()
 
     def collect(self):
         logging.debug("Incoming request")
@@ -68,9 +72,8 @@ class UrBackupCollector(object):
             "Total size of backups in bytes",
             labels=common_label_names + ["backup_type", "archived"])
 
-        api = urbackup_api.urbackup_server(self.server, self.username, self.password)
         try:
-            api_status = api.get_status()
+            api_status = self.get_status_autologin()
         except Exception as e:
             logging.error("Unable to connect to UrBackup Server. Error: %s", str(e))
             return
@@ -98,13 +101,13 @@ class UrBackupCollector(object):
 
             if self.export_client_backups:
                 count_archived, count_no_archived, size_archived, size_no_archived = self.calc_client_backups(
-                    api.get_clientbackups(client["id"]))
+                    self.api.get_clientbackups(client["id"]))
                 backup_number_total.add_metric(common_label_values + ["file", "yes"], count_archived)
                 backup_number_total.add_metric(common_label_values + ["file", "no"], count_no_archived)
                 backup_size_total.add_metric(common_label_values + ["file", "yes"], size_archived)
                 backup_size_total.add_metric(common_label_values + ["file", "no"], size_no_archived)
                 count_archived, count_no_archived, size_archived, size_no_archived = self.calc_client_backups(
-                    api.get_clientimagebackups(client["id"]))
+                    self.api.get_clientimagebackups(client["id"]))
                 backup_number_total.add_metric(common_label_values + ["image", "yes"], count_archived)
                 backup_number_total.add_metric(common_label_values + ["image", "no"], count_no_archived)
                 backup_size_total.add_metric(common_label_values + ["image", "yes"], size_archived)
@@ -120,6 +123,18 @@ class UrBackupCollector(object):
         if self.export_client_backups:
             yield backup_number_total
             yield backup_size_total
+
+    def get_status_autologin(self):
+        try:
+            api_status = self.api.get_status()
+            if api_status is None:
+                raise Exception("Get Status response is empty, check the log traces.")
+        except Exception:
+            self.api = urbackup_api.urbackup_server(self.server, self.username, self.password)
+            api_status = self.api.get_status()
+            if api_status is None:
+                raise Exception("Get Status response is empty, check the log traces.")
+        return api_status
 
     @staticmethod
     def calc_client_backups(client_backups):

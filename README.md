@@ -47,9 +47,8 @@ The architectures supported by this image are:
 | linux/arm/v6     | No                   | Yes        |
 | linux/arm/v7     | Yes                  | Yes        |
 | linux/arm64/v8   | Yes                  | Yes        |
-| linux/mips64le   | Yes                  | No         |
-| linux/ppc64le    | Yes                  | No         |
-| linux/s390x      | Yes                  | No         |
+| linux/ppc64le    | Yes                  | Yes        |
+| linux/s390x      | Yes                  | Yes        |
 
 #### docker-compose
 

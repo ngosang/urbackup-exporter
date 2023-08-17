@@ -176,8 +176,8 @@ if __name__ == "__main__":
         logging.error("Configuration error. The environment variable URBACKUP_SERVER_URL is mandatory")
         sys.exit(1)
 
-    urbackup_server_username = os.environ.get("URBACKUP_SERVER_USERNAME", "admin")
-    urbackup_server_password = os.environ.get("URBACKUP_SERVER_PASSWORD", "1234")
+    urbackup_server_username = os.environ.get('URBACKUP_SERVER_USERNAME', 'admin')
+    urbackup_server_password = os.environ.get('URBACKUP_SERVER_PASSWORD', '1234')
     urbackup_export_client_backups = os.environ.get("EXPORT_CLIENT_BACKUPS", "true").lower() == "true"
     exporter_address = os.environ.get("LISTEN_ADDRESS", "0.0.0.0")
     exporter_port = int(os.environ.get("LISTEN_PORT", 9554))

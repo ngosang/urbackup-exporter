@@ -89,15 +89,15 @@ class UrBackupCollector(object):
 
             client_online.add_metric(common_label_values, float(client["online"]))
             client_status.add_metric(common_label_values, float(client["status"]))
-            client_lastseen.add_metric(common_label_values, self.float_or_default(client["lastseen"], 0.0))
+            client_lastseen.add_metric(common_label_values, self.float_or_default(client, "lastseen", 0.0))
             backup_ok.add_metric(common_label_values + ["file"], float(client["file_ok"]))
             backup_ok.add_metric(common_label_values + ["image"], float(client["image_ok"]))
             backup_issues.add_metric(common_label_values + ["file"],
-                                     self.float_or_default(client["last_filebackup_issues"], 0.0))
+                                     self.float_or_default(client, "last_filebackup_issues", 0.0))
             backup_lasttime.add_metric(common_label_values + ["file"],
-                                       self.float_or_default(client["lastbackup"], 0.0))
+                                       self.float_or_default(client, "lastbackup", 0.0))
             backup_lasttime.add_metric(common_label_values + ["image"],
-                                       self.float_or_default(client["lastbackup_image"], 0.0))
+                                       self.float_or_default(client, "lastbackup_image", 0.0))
 
             if self.export_client_backups:
                 count_archived, count_no_archived, size_archived, size_no_archived = self.calc_client_backups(
@@ -152,10 +152,10 @@ class UrBackupCollector(object):
         return count_archived, count_no_archived, size_archived, size_no_archived
 
     @staticmethod
-    def float_or_default(x, default=0.0):
+    def float_or_default(dict, key, default=0.0):
         try:
-            return float(x)
-        except ValueError:
+            return float(dict.get(key, default))
+        except Exception:
             return default
 
 

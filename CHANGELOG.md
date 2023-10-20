@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 / 2023/10/20
+
+* Improve UrBackup API error handling
+* Update Python dependencies
+* Update Docker image with Alpine 3.18 and Python 3.12
+* Update Docker image with Debian Bookworm (12) and Python 3.12
+* Add docker-compose and documentation to test in local
+* Tested with UrBackup 2.5.31
+
 ## 1.1.3 / 2022/12/06
 
 * Update dependencies and base Docker image

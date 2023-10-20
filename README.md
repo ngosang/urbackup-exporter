@@ -6,7 +6,7 @@
 [![Donate Bitcoin](https://img.shields.io/badge/Donate-Bitcoin-f7931a.svg)](https://www.blockchain.com/btc/address/1PmeuXvamFM4hkFAJwNdSBee4pRWQW9i4d)
 [![Donate Ethereum](https://img.shields.io/badge/Donate-Ethereum-8c8c8c.svg)](https://www.blockchain.com/eth/address/0x0D1549BbB00926BF3D92c1A8A58695e982f1BE2E)
 
-Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system. Tested with UrBackup server 2.4.13.
+Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system. Tested with UrBackup server 2.4.13 and 2.5.31.
 
 Inspired by [h3po work](https://gist.github.com/h3po/36cab38d2b443c0523c4c9e83203f382).
 

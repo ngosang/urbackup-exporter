@@ -1,0 +1,24 @@
+version: '2.1'
+services:
+  urbackup:
+    image: uroni/urbackup-server:2.5.x
+    container_name: urbackup
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=100
+      - VERBOSITY=info
+    ports:
+      - "55414:55414"
+    restart: unless-stopped
+
+  urbackup-exporter:
+    image: ngosang/urbackup-exporter:local
+    container_name: urbackup-exporter
+    environment:
+      - TZ=Europe/Madrid
+      - LOG_LEVEL=INFO
+      - URBACKUP_SERVER_URL=http://urbackup:55414/x
+    ports:
+      - "9554:9554"
+    restart: unless-stopped

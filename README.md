@@ -1,10 +1,11 @@
 # UrBackup Exporter
 
 [![Latest release](https://img.shields.io/github/v/release/ngosang/urbackup-exporter)](https://github.com/ngosang/urbackup-exporter/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/ngosang/urbackup-exporter)](https://hub.docker.com/r/ngosang/urbackup-exporter/)
-[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-yellow.svg)](https://www.paypal.com/paypalme/diegoheras0xff)
-[![Donate Bitcoin](https://img.shields.io/badge/Donate-Bitcoin-f7931a.svg)](https://www.blockchain.com/btc/address/1PmeuXvamFM4hkFAJwNdSBee4pRWQW9i4d)
-[![Donate Ethereum](https://img.shields.io/badge/Donate-Ethereum-8c8c8c.svg)](https://www.blockchain.com/eth/address/0x0D1549BbB00926BF3D92c1A8A58695e982f1BE2E)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ngosang/urbackup-exporter)](https://hub.docker.com/r/ngosang/urbackup-exporter)
+[![Docker Stars](https://img.shields.io/docker/stars/ngosang/urbackup-exporter)](https://hub.docker.com/r/ngosang/urbackup-exporter)
+[![GitHub Repo stars](https://img.shields.io/github/stars/ngosang/urbackup-exporter)](https://github.com/ngosang/urbackup-exporter)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/ngosang)
 
 Prometheus exporter for the [UrBackup](https://www.urbackup.org/) backup system. Tested with UrBackup server 2.4.13 and 2.5.31.
 
